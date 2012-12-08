@@ -61,7 +61,7 @@ int main(int argc,char** argv){
   int base= N/numProc;
   //int resto= N%numProc;
   
-  long long int primos[base+1];
+  long long int primos[N];
   int indice=0;
  
   // Cada proceso verifica los numeros q le toca
@@ -69,12 +69,12 @@ int main(int argc,char** argv){
     for(int j=0; j<N ; j++){
       string strNumero= firstHalves[i];
       strNumero.append(secondHalves[j]);
-      printf("El string del primo: %s \n",strNumero.c_str());
+      //printf("El string del primo: %s \n",strNumero.c_str());
       long long int numero= atoll(strNumero.c_str());
-      cout << "Viendo si es primo: "<< numero << "\n";
+      //cout << "Viendo si es primo: "<< numero << "\n";
       if(esPrimo(numero)) {
 	primos[indice]=numero;
-	cout << "Es primo: " << numero << endl;
+	//cout << "Es primo: " << numero << " proceso" << myid<< endl;
 	indice++;
       }
     }
@@ -89,32 +89,23 @@ int main(int argc,char** argv){
 	long long int numero= atoll(strNumero.c_str());
 	if(esPrimo(numero)){
 	  primos[indice]=numero;
-	  cout << "Es primo: " << numero << endl;
 	  indice++;
 	}
       }
     }
   }
-  for(int i=indice; i<(base+1); i++){
+  for(int i=indice; i<N ; i++){
     primos[i]=0;
   }
   
   long long int *buff;
   if(myid==0){
-    buff= (long long int*) malloc(sizeof(long long int)*numProc*(base+1));
+    buff= (long long int*) malloc(sizeof(long long int)*numProc*N);
   }
-  /*
-  cout << "El arreglo antes de pasarlo" << endl;
-  for(int i=0; i<(base+1);i++){
-    cout << primos[i] << endl;
-    }*/
 
-  MPI_Gather(primos,base+1,MPI_LONG_LONG_INT,buff,base+1,MPI_LONG_LONG_INT,0,MPI_COMM_WORLD);
-  /*
-  cout << "El arreglo despues de pasarlo" << endl;
-  for(int i=0; i<(base+1);i++){
-    cout << buff[i] << endl;
-    }*/
+
+  MPI_Gather(primos,N,MPI_LONG_LONG_INT,buff,N,MPI_LONG_LONG_INT,0,MPI_COMM_WORLD);
+
   
   list<long long int> listprimos;
   if(myid==0){
