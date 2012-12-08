@@ -109,7 +109,7 @@ int main(int argc,char** argv){
   
   list<long long int> listprimos;
   if(myid==0){
-    for(int i=0; i<((base+1)*numProc); i++){
+    for(int i=0; i<(N*numProc); i++){
       if(buff[i]!=0){
 	listprimos.push_back(buff[i]);
       }
