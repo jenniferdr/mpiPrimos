@@ -9,9 +9,9 @@
 
 using namespace std;
 
-bool esPrimo(int numero){
+bool esPrimo(long int numero){
   int cont = 2;
-  int numero1= sqrt(numero);
+  long int numero1= sqrt(numero);
   
   //printf("raiz %d, ",numero1);
   if (numero == 1){
@@ -70,11 +70,11 @@ int main(int argc,char** argv){
       string strNumero= firstHalves[i];
       strNumero.append(secondHalves[j]);
       printf("El string del primo: %s \n",strNumero.c_str());
-      long long int numero= atoi(strNumero.c_str());
+      long long int numero= atoll(strNumero.c_str());
       cout << "Viendo si es primo: "<< numero << "\n";
       if(esPrimo(numero)) {
 	primos[indice]=numero;
-	//printf("%d \n",numero);
+	cout << "Es primo: " << numero << endl;
 	indice++;
       }
     }
@@ -86,30 +86,40 @@ int main(int argc,char** argv){
       for(int j=0; j<N ; j++){
 	string strNumero= firstHalves[i];
 	strNumero.append(secondHalves[j]);
-	long long int numero= atoi(strNumero.c_str());
+	long long int numero= atoll(strNumero.c_str());
 	if(esPrimo(numero)){
 	  primos[indice]=numero;
-	  //printf("%d \n ",numero);
+	  cout << "Es primo: " << numero << endl;
 	  indice++;
 	}
       }
     }
   }
   for(int i=indice; i<(base+1); i++){
-    primos[i]=-1;
+    primos[i]=0;
   }
   
-  int *buff;
+  long long int *buff;
   if(myid==0){
-    buff= (int*) malloc(sizeof(long long int)*numProc*(base+1));
+    buff= (long long int*) malloc(sizeof(long long int)*numProc*(base+1));
   }
+  /*
+  cout << "El arreglo antes de pasarlo" << endl;
+  for(int i=0; i<(base+1);i++){
+    cout << primos[i] << endl;
+    }*/
 
-  MPI_Gather(primos,base+1,MPI_INT,buff,base+1,MPI_INT,0,MPI_COMM_WORLD);
-
+  MPI_Gather(primos,base+1,MPI_LONG_LONG_INT,buff,base+1,MPI_LONG_LONG_INT,0,MPI_COMM_WORLD);
+  /*
+  cout << "El arreglo despues de pasarlo" << endl;
+  for(int i=0; i<(base+1);i++){
+    cout << buff[i] << endl;
+    }*/
+  
   list<long long int> listprimos;
   if(myid==0){
     for(int i=0; i<((base+1)*numProc); i++){
-      if(buff[i]!=-1){
+      if(buff[i]!=0){
 	listprimos.push_back(buff[i]);
       }
     }
@@ -121,7 +131,6 @@ int main(int argc,char** argv){
       cout << *i << "\n";
     }
   }
-  cout << sizeof(long long int);
 
   MPI_Finalize();
   return 0;
