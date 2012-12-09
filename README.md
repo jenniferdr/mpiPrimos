@@ -9,7 +9,7 @@ en la forma especificada en el enunciado del problema.
 Ejecutar los siguientes comandos:
 
     mpic++ weirdPrimes2.cpp
-    mpirun -np 2 a.out entrada.txt 
+    mpirun -np 2 a.out casoPrueba/prueba.txt 
 
 
 Autoras de la solucion del proyecto:
