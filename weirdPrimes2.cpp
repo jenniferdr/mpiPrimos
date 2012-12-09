@@ -61,7 +61,7 @@ int main(int argc,char** argv){
   int base= N/numProc;
   //int resto= N%numProc;
   
-  long long int primos[N];
+  long long int primos[N*N];
   int indice=0;
  
   // Cada proceso verifica los numeros q le toca
@@ -94,22 +94,22 @@ int main(int argc,char** argv){
       }
     }
   }
-  for(int i=indice; i<N ; i++){
+  for(int i=indice; i<N*N ; i++){
     primos[i]=0;
   }
   
   long long int *buff;
   if(myid==0){
-    buff= (long long int*) malloc(sizeof(long long int)*numProc*N);
+    buff= (long long int*) malloc(sizeof(long long int)*numProc*N*N);
   }
 
 
-  MPI_Gather(primos,N,MPI_LONG_LONG_INT,buff,N,MPI_LONG_LONG_INT,0,MPI_COMM_WORLD);
+  MPI_Gather(primos,N*N,MPI_LONG_LONG_INT,buff,N*N,MPI_LONG_LONG_INT,0,MPI_COMM_WORLD);
 
   
   list<long long int> listprimos;
   if(myid==0){
-    for(int i=0; i<(N*numProc); i++){
+    for(int i=0; i<(N*N*numProc); i++){
       if(buff[i]!=0){
 	listprimos.push_back(buff[i]);
       }
